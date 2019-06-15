@@ -50,6 +50,7 @@
           </li>
         </ul>
       </div>
+      <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
     </div>
   </div>
 </template>
@@ -57,6 +58,7 @@
 <script>
 import BScroll from 'better-scroll'
 import cartcontrol from '@/components/cartcontrol/cartcontrol'
+import shopcart from '@/components/shopcart/shopcart'
 export default {
   name: 'Goods',
   props: {
@@ -81,10 +83,22 @@ export default {
         }
       }
       return 0
-    }
+    },
+    selectFoods () {
+      let foods = []
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food)
+          }
+        })
+      })
+
+    },
   },
   components: {
-    cartcontrol
+    cartcontrol,
+    shopcart
   },
   methods: {
     selectMenu(index, event) {
@@ -139,7 +153,7 @@ export default {
   created () {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
 
-    this.$http.get('https://www.easy-mock.com/mock/5ca2c29464930718b239eb94/lm/vue-eleme-goods')
+    this.$http.get('https://www.easy-mock.com/mock/5ca466a713e4cf68f04a42f7/js_fullStack/goods')
       .then(res => {
         // console.log(res)
         if (res.data.errno === 0) {
