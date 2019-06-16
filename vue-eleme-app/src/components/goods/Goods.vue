@@ -1,58 +1,47 @@
 <template>
-  <div>
-    <div class="goods">
-      <div class="menu-wrapper" ref="menuWrapper">
-        <ul>
-          <li
-            v-for="(item,index) in goods"
-            :key="index"
-            class="menu-item"
-            :class="{'current':currentIndex===index}"
-            @click="selectMenu(index,$event)"
-          >
-            <span class="text border-1px">
-              <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>
-              {{item.name}}
-            </span>
-          </li>
-        </ul>
-      </div>
-      <div class="foods-wrapper" ref="foodsWrapper">
-        <ul>
-          <li v-for="(item,index) in goods" :key="index" class="food-list" ref="foodList">
-            <h1 class="title">{{item.name}}</h1>
-            <ul>
-              <li
-                v-for="(food,index) in item.foods"
-                :key="index"
-                class="food-item border-1px"
-              >
-                <div class="icon">
-                  <img width="57" height="57" :src="food.icon">
-                </div>
-                <div class="content">
-                  <h2 class="name">{{food.name}}</h2>
-                  <p class="desc">{{food.description}}</p>
-                  <div class="extra">
-                    <span class="count">月售{{food.sellCount}}份</span>
-                    <span>好评率{{food.rating}}%</span>
-                  </div>
-                  <div class="price">
-                    <span class="now">￥{{food.price}}</span>
-                    <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-                  </div>
-                  <div class="cartcontrol-wrapper">
-                    <cartcontrol @add="addFood" :food="food"></cartcontrol>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+<div>
+  <div class="goods">
+    <div class="menu-wrapper" ref="menuWrapper">
+      <ul>
+        <li v-for="(item,index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index,$event)">
+          <span class="text border-1px">
+              <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span> {{item.name}}
+          </span>
+        </li>
+      </ul>
     </div>
+    <div class="foods-wrapper" ref="foodsWrapper">
+      <ul>
+        <li v-for="(item,index) in goods" :key="index" class="food-list" ref="foodList">
+          <h1 class="title">{{item.name}}</h1>
+          <ul>
+            <li @click="selectFood(food, $event)" v-for="(food,index) in item.foods" :key="index" class="food-item border-1px">
+              <div class="icon">
+                <img width="57" height="57" :src="food.icon">
+              </div>
+              <div class="content">
+                <h2 class="name">{{food.name}}</h2>
+                <p class="desc">{{food.description}}</p>
+                <div class="extra">
+                  <span class="count">月售{{food.sellCount}}份</span>
+                  <span>好评率{{food.rating}}%</span>
+                </div>
+                <div class="price">
+                  <span class="now">￥{{food.price}}</span>
+                  <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
+</div>
 </template>
 
 <script>
@@ -66,7 +55,7 @@ export default {
       type: Object
     }
   },
-  data () {
+  data() {
     return {
       goods: [],
       listHeight: [],
@@ -74,17 +63,17 @@ export default {
     }
   },
   computed: {
-    currentIndex () {
-      for (let i = 0;i < this.listHeight.length; i++) {
+    currentIndex() {
+      for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i]
-        let height2 = this.listHeight[i+1]
+        let height2 = this.listHeight[i + 1]
         if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
           return i
         }
       }
       return 0
     },
-    selectFoods () {
+    selectFoods() {
       let foods = []
       this.goods.forEach(good => {
         good.foods.forEach(food => {
@@ -93,8 +82,8 @@ export default {
           }
         })
       })
-
-    },
+      return foods
+    }
   },
   components: {
     cartcontrol,
@@ -103,18 +92,18 @@ export default {
   methods: {
     selectMenu(index, event) {
       if (!event._constructed) {
-        return;
+        return
       }
-      let foodList = this.$refs.foodList;
-      let el = foodList[index];
-      this.foodsScroll.scrollToElement(el, 300);
+      let foodList = this.$refs.foodList
+      let el = foodList[index]
+      this.foodsScroll.scrollToElement(el, 300)
     },
     selectFood(food, event) {
       if (!event._constructed) {
-        return;
+        return
       }
-      this.selectedFood = food;
-      this.$refs.food.show();
+      this.selectFood = food
+      this.$refs.food.show()
     },
     addFood(target) {
       this._drop(target);
@@ -126,36 +115,35 @@ export default {
       });
     },
     _initScroll() {
-      this.meunScroll = new BScroll(this.$refs.menuWrapper, {
+      this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
       })
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
         click: true,
         probeType: 3
       })
-      this.foodsScroll.on('scroll',pos => {
-        // console.log(pos,'----')
+      this.foodsScroll.on('scroll', pos => {
+        // console.log(pos)
         this.scrollY = Math.abs(Math.round(pos.y))
-        console.log(this.scrollY)
       })
     },
-    _calculateHeight () {
-      let foodList = this.$refs.foodList;
-      let height = 0;
-      this.listHeight.push(height);
+    _calculateHeight() {
+      let foodList = this.$refs.foodList
+      let height = 0
+      this.listHeight.push(height)
       for (let i = 0; i < foodList.length; i++) {
-        let item = foodList[i];
-        height += item.clientHeight;
-        this.listHeight.push(height);
+        let item = foodList[i]
+        height += item.clientHeight
+        this.listHeight.push(height)
       }
     }
   },
-  created () {
+  created() {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
 
-    this.$http.get('https://www.easy-mock.com/mock/5ca466a713e4cf68f04a42f7/js_fullStack/goods')
+    this.$http.get('https://www.easy-mock.com/mock/5ca2c29464930718b239eb94/lm/vue-eleme-goods')
       .then(res => {
-        // console.log(res)
+        console.log(res)
         if (res.data.errno === 0) {
           this.goods = res.data.data
           this.$nextTick(() => { //页面渲染完成才能执行
