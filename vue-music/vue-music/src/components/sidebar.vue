@@ -48,18 +48,27 @@
         </ul>
       </div>
     </div>
+    <div v-show="showSidebar" class="sidebar_mask" @click="_hidebar"></div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      showSidebar: true
     }
   },
+  computed: {
+    ...mapGetters([
+      'showSidebar'
+    ])
+  },
   methods: {
-    _hidebar () {}
+    _hidebar () {
+      // 如何应用vuex里面的actions方法
+      this.$store.dispatch('setShowSidebar',false)
+    }
   },
 }
 </script>
