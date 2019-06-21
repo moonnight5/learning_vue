@@ -16,6 +16,7 @@
     <router-view></router-view>
     </keep-alive>
     <!-- play -->
+    <play></play>
     <!-- sidebar -->
     <sidebar></sidebar>
   </div>
