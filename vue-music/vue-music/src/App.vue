@@ -13,7 +13,8 @@
     </v-tab>
     <!-- content -->
     <keep-alive> 
-    <router-view></router-view>
+    <router-view>
+    </router-view>
     </keep-alive>
     <!-- play -->
     <play></play>
