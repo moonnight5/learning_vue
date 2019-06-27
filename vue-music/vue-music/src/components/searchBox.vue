@@ -27,7 +27,7 @@ export default {
     setQuery (query) {
       this.query = query
     },
-    //失去焦点   input自带方法
+    //失去焦点
     blur () {
       this.$refs.query.blur()
     }
