@@ -13,7 +13,7 @@ export default {
     'Display': display
   },data() {
     return {
-      code: defaultCode
+      code: defaultCode  
     }
   },
 }
