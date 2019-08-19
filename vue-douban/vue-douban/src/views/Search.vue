@@ -2,7 +2,7 @@
   <div class="search">
     <ScrollView :data="list">
       <div class="input-wrap">
-        <SearchBox @input="search" @clear="clear" :placeholder="placeholder" />
+        <SearchBox @input="search" @clear="clear" ref="searchBox" />
       </div>
       <div class="hotkey-wrap">
         <h1 class="title">热门搜索</h1>
@@ -15,16 +15,16 @@
           <span>搜索历史</span>
           <i class="iconfont icon-clear"/>
         </div>
-        <div v-for="item in searchHistory" :key="item" class="item">
+        <div v-for="item in searchHistory" :key="item" class="item" >
           <i class="iconfont icon-history"/>
-          <span class="text" >{{ item }}</span>
-          <i class="iconfont icon-del"/>
+          <span class="text" @click="addQuery(item)">{{ item }}</span>
+          <i class="iconfont icon-delete"/>
         </div>
       </div>
     </ScrollView>
     <div class="result-wrap" v-show="isShow">
       <ScrollView :data="movieList">
-        <Card v-for="movie in movieList" :key="movie._id" :movie="movie"/>
+        <Card v-for="movie in movieList" :key="movie._id" :movie="movie" @select="selectItem"/>
       </ScrollView>
     </div>
   </div>
@@ -39,7 +39,6 @@ export default {
   data() {
     return {
       list: [],
-      placeholder: '',
       movieList: [],
       isShow: false,
       hotKeys: [],
@@ -57,6 +56,9 @@ export default {
   methods: {
     search(query) {
       // console.log(query)
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
       const params = {
         keyword: query
       };
@@ -65,13 +67,15 @@ export default {
           // console.log(res)
           if(res.data.code === 1001) {
             this.movieList = res.data.result.movies
-            // this.isShow = true
+            this.isShow = true
           }
         })
         this.saveSearchHistory(query)
       }, 500);
     },
-    clear() {},
+    clear() {
+      this.isShow = false
+    },
     getHotKeys() {
       axios.get('/api/api/movie/get_hot_search').then(res => {
         // console.log(res)
@@ -80,7 +84,23 @@ export default {
     },
     ...mapMutations([
       'saveSearchHistory'
-    ])
+    ]),
+    selectItem(id) {
+      // console.log(id)
+      this.$router.push(`/movie/${id}`)
+    },
+    addQuery(e) {
+      // console.log(e)
+      this.$refs.searchBox.setQuery(e)
+      this.search(e)
+    },
+    // deleteItem(e) {
+    //   // console.log(e)
+    //   var index = this.searchHistory.indexOf(e)
+    //   if (index > -1) {
+    //   this.searchHistory.splice(index,1)
+    //   }
+    // }
   },
   components: {
     SearchBox
