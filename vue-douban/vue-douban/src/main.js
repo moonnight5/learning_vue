@@ -6,9 +6,12 @@ import router from './router'
 import globalComponents from './common/js/components'
 import './common/styles/reset.styl'
 import VueLazyLoad from 'vue-lazyload'
+import axios from './common/js/axios'
+import store from './store'
 
 Vue.config.productionTip = false
 
+Vue.use(axios)
 Vue.use(globalComponents)
 Vue.use(VueLazyLoad, {
   loading: require('./common/images/loading.png')
@@ -18,6 +21,7 @@ Vue.use(VueLazyLoad, {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
